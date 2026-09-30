@@ -28,7 +28,7 @@ Reusable agentic workflows for research and trip planning cut complex research t
 
 ## Architecture
 
-```
+```mermaid
 flowchart TB
     subgraph infra["Self-hosted · Docker / Linux · Ollama local inference"]
         direction TB
