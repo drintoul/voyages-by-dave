@@ -29,39 +29,17 @@ Reusable agentic workflows for research and trip planning cut complex research t
 ## Architecture
 
 ```
-                        ┌─────────────────────────────┐
-                        │   Agentic workflows         │
-                        │   (LangGraph + MCP client)  │
-                        │                             │
-                        │  • travel research query    │
-                        │  • trip planning workflow   │
-                        │  • evidence verification    │
-                        └──────┬──────────┬───────────┘
-                               │          │
-              ┌────────────────┘          └────────────────┐
-              ▼                                            ▼
-┌─────────────────────────────┐            ┌─────────────────────────────┐
-│  RAG: private knowledge     │            │  Live sources (20+ MCP      │
-│  base with source           │            │  tools over curated data)   │
-│  attribution                │            │                             │
-│                             │            │  • web scrape / crawl / map │
-│  scrape → chunk → embed →   │            │  • browser interaction      │
-│  rerank → cite              │            │  • web search (SearXNG)     │
-│                             │            │  • graph queries (Neo4j)    │
-│  Qdrant + cross-encoder     │            │  • weather / advisories /   │
-│  reranking, local LLM       │            │    events / vendor data     │
-└──────────────┬──────────────┘            └─────────────────────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│  Ingestion (self-hosted)    │
-│  Firecrawl + Playwright     │
-│  browser sessions, Ollama   │
-│  extraction — no external   │
-│  LLM calls                  │
-└─────────────────────────────┘
-
-All inference local (Ollama). All infrastructure self-hosted (Docker/Linux).
+flowchart TB
+    subgraph infra["Self-hosted · Docker / Linux · Ollama local inference"]
+        direction TB
+        A["Agentic workflows<br/>LangGraph + MCP client<br/>• travel research query<br/>• trip planning workflow<br/>• evidence verification"]
+        B["RAG: private knowledge base<br/>scrape → chunk → embed → rerank → cite<br/>Qdrant + cross-encoder · local LLM"]
+        C["Live sources · 20+ MCP tools<br/>• web scrape / crawl / map<br/>• browser interaction<br/>• web search (SearXNG)<br/>• graph queries (Neo4j)<br/>• weather / advisories / events"]
+        D["Ingestion<br/>Firecrawl + Playwright<br/>Ollama extraction — no external LLM calls"]
+        A --> B
+        A --> C
+        D --> B
+    end
 ```
 
 ## Components
